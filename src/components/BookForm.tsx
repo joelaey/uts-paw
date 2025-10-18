@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createBook, updateBook } from '../actions/bookActions';
-import { BookFormData, Book } from '../lib/validations';
+import { BookFormData } from '../lib/validations';
 import Button from './ui/Button';
 import Input from './ui/Input';
 import Card from './ui/Card';
@@ -29,7 +29,8 @@ export default function BookForm({ book, onClose }: BookFormProps) {
     summary: book?.summary || '',
   });
 
-  const [errors, setErrors] = useState<Partial<BookFormData>>({});
+  // errors diset hanya string supaya tipe tetap aman
+  const [errors, setErrors] = useState<Partial<Record<keyof BookFormData, string>>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
 
@@ -39,6 +40,7 @@ export default function BookForm({ book, onClose }: BookFormProps) {
       ...prev,
       [name]: name === 'year' ? parseInt(value) || 0 : value,
     }));
+
     if (errors[name as keyof BookFormData]) {
       setErrors(prev => ({ ...prev, [name]: undefined }));
     }
@@ -91,8 +93,10 @@ export default function BookForm({ book, onClose }: BookFormProps) {
           {book ? 'Perbarui informasi buku Anda' : 'Tambahkan buku baru ke koleksi Anda'}
         </p>
       </div>
+
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Judul */}
           <div className="space-y-2">
             <label className="block text-sm font-semibold text-gray-700">📖 Judul Buku</label>
             <Input
@@ -105,6 +109,8 @@ export default function BookForm({ book, onClose }: BookFormProps) {
               className="bg-white/80 backdrop-blur-sm border-gray-200/50 focus:border-teal-400"
             />
           </div>
+
+          {/* Penulis */}
           <div className="space-y-2">
             <label className="block text-sm font-semibold text-gray-700">👤 Penulis</label>
             <Input
@@ -118,6 +124,8 @@ export default function BookForm({ book, onClose }: BookFormProps) {
             />
           </div>
         </div>
+
+        {/* Tahun & Cover URL */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
             <label className="block text-sm font-semibold text-gray-700">📅 Tahun Terbit</label>
@@ -125,13 +133,14 @@ export default function BookForm({ book, onClose }: BookFormProps) {
               type="number"
               name="year"
               placeholder="2024"
-              value={formData.year}
+              value={formData.year.toString()}
               onChange={handleChange}
               required
               error={errors.year}
               className="bg-white/80 backdrop-blur-sm border-gray-200/50 focus:border-teal-400"
             />
           </div>
+
           <div className="space-y-2">
             <label className="block text-sm font-semibold text-gray-700">🖼️ URL Sampul (Opsional)</label>
             <Input
@@ -144,6 +153,8 @@ export default function BookForm({ book, onClose }: BookFormProps) {
             />
           </div>
         </div>
+
+        {/* Ringkasan */}
         <div className="space-y-2">
           <label className="block text-sm font-semibold text-gray-700">📝 Ringkasan Buku (Opsional)</label>
           <textarea
@@ -155,6 +166,8 @@ export default function BookForm({ book, onClose }: BookFormProps) {
             rows={4}
           />
         </div>
+
+        {/* Tombol */}
         <div className="flex gap-4 justify-end pt-6 border-t border-gray-200/50">
           {onClose && (
             <Button
