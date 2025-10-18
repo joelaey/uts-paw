@@ -144,12 +144,13 @@ export default function BookForm({ book, onClose }: BookFormProps) {
           <div className="space-y-2">
             <label className="block text-sm font-semibold text-gray-700">🖼️ URL Sampul (Opsional)</label>
             <Input
-              name="coverUrl"
-              placeholder="https://..."
-              value={formData.coverUrl}
+              type="number"
+              name="year"
+              placeholder="2024"
+              value={formData.year.toString()}
               onChange={handleChange}
-              error={errors.coverUrl}
-              className="bg-white/80 backdrop-blur-sm border-gray-200/50 focus:border-teal-400"
+              required
+              error={errors.year?.toString()}
             />
           </div>
         </div>
